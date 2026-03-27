@@ -5,11 +5,11 @@ import { generateText } from '@xsai/generate-text'
 import { serialize } from 'superjson'
 import { ref } from 'vue'
 import { createChatProvider } from 'xsai-transformers'
-import chatWorkerURL from 'xsai-transformers/chat/worker?worker&url'
+import chatWorkerURL from 'xsai-transformers/chat/worker/qwen?worker&url'
 
 import Progress from '../components/Progress.vue'
 
-const modelId = ref('onnx-community/gemma-3-270m-it-ONNX')
+const modelId = ref('huggingworld/Qwen3.5-0.8B-ONNX')
 const input = ref('Hi! How are you?')
 const results = ref<any>()
 const loadingItems = ref<(InitiateProgressInfo | ProgressStatusInfo)[]>([])
@@ -46,7 +46,11 @@ async function load() {
 
   try {
     await chatProvider.loadChat(modelId.value, {
-      dtype: 'q4',
+      dtype: {
+        decoder_model_merged: 'q4',
+        embed_tokens: 'q4',
+        vision_encoder: 'fp16',
+      },
       onProgress: (progress) => {
         switch (progress.status) {
           case 'done':

@@ -26,6 +26,10 @@
         "types": "./dist/worker/index.d.ts",
         "default": "./dist/worker/index.js"
       },
+      "./worker/qwen": {
+        "types": "./dist/worker/qwen.d.ts",
+        "default": "./dist/worker/qwen.js"
+      },
       "./package.json": "./package.json"
     },
     "main": "./dist/index.js",
@@ -33,7 +37,8 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./worker": "./src/worker/index.ts"
+    "./worker": "./src/worker/index.ts",
+    "./worker/qwen": "./src/worker/qwen.ts"
   },
   "files": [
     "README.md",
@@ -64,6 +69,7 @@
     "@xsai/shared-chat": "catalog:",
     "@xsai/stream-object": "catalog:",
     "@xsai/stream-text": "catalog:",
-    "gpuu": "^1.0.6"
+    "gpuu": "^1.0.6",
+    "transformers-next": "npm:@huggingface/transformers@4.0.0-next.9"
   }
 }

@@ -26,6 +26,10 @@
         "types": "./dist/chat/worker.d.ts",
         "import": "./dist/chat/worker.js"
       },
+      "./chat/worker/qwen": {
+        "types": "./dist/chat/worker/qwen.d.ts",
+        "import": "./dist/chat/worker/qwen.js"
+      },
       "./embed/worker": {
         "types": "./dist/embed/worker.d.ts",
         "import": "./dist/embed/worker.js"
