@@ -9,6 +9,8 @@ export enum MessageStatus {
 
 export type { ProgressInfo }
 
+export type ConfigureParams = typeof import('@huggingface/transformers')['env']
+
 export interface EmbedProviderOptions extends Omit<CreateProviderOptions, 'baseURL'> {
   baseURL?: string
   worker?: Worker

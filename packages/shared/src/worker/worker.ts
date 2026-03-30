@@ -76,13 +76,14 @@ export const createTransformersWorker = <
     }
 
     try {
-      if (!isLoading && !isReady && !worker) {
+      if (!worker) {
         isLoading = true
         worker = getWorker(createOptions)
         workerContext = createContext(worker).context
-
+      }
+      if (!isLoading && !isReady) {
         const onProgress = getOnProgress(options)
-        const load = defineStreamInvoke(workerContext, createLoadDefinition<Params>())
+        const load = defineStreamInvoke(workerContext!, createLoadDefinition<Params>())
         const loading = readableStreamToAsyncIterator(load(payload))
 
         for await (const loadEvent of loading) {
@@ -117,7 +118,18 @@ export const createTransformersWorker = <
     return process(payload)
   }
 
+  const configure = async (e: any, onResultType: string) => {
+    if (!worker) {
+      worker = getWorker(createOptions)
+      workerContext = createContext(worker).context
+    }
+
+    const processDefinition = createProcessDefinition<any, void>(onResultType)
+    await defineInvoke(workerContext!, processDefinition)(e)
+  }
+
   return {
+    configure,
     dispose: () => {
       if (!(worker))
         return

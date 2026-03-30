@@ -9,7 +9,7 @@ import embedWorkerURL from 'xsai-transformers/embed/worker?worker&url'
 
 import Progress from '../components/Progress.vue'
 
-const modelId = ref('Xenova/all-MiniLM-L6-v2')
+const modelId = ref('onnx-community/Qwen3-Embedding-0.6B-ONNX')
 const input = ref('Hello, world!')
 const results = ref<any>()
 const loadingItems = ref<(InitiateProgressInfo | ProgressStatusInfo)[]>([])
@@ -37,7 +37,13 @@ async function execute() {
 }
 
 async function handleLoad() {
-  await embedProvider.terminateEmbed()
+  embedProvider.terminateEmbed()
+
+  embedProvider.configureTransformersEnv({
+    remoteHost: 'http://127.0.0.1:8080/',
+    remotePathTemplate: '{model}',
+  })
+
   await load()
 }
 
@@ -46,6 +52,7 @@ async function load() {
 
   try {
     await embedProvider.loadEmbed(modelId.value, {
+      dtype: 'q4f16',
       onProgress: (progress) => {
         switch (progress.status) {
           case 'done':

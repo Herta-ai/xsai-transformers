@@ -1,4 +1,4 @@
-import type { FeatureExtractionPipelineOptions } from '@huggingface/transformers'
+import type { env, FeatureExtractionPipelineOptions } from '@huggingface/transformers'
 import type { EmbedProviderWithExtraOptions } from '@xsai-ext/shared-providers'
 import type { LoadOptionProgressCallback, LoadOptions } from '@xsai-transformers/shared/types'
 import type { EmbedResponse } from '@xsai/embed'
@@ -10,6 +10,7 @@ import { createTransformersWorker } from '@xsai-transformers/shared/worker'
 import type { EmbedProviderOptions, EmbedWorkerParams, EmbedWorkerResults } from './types'
 
 export type LoadableEmbedProvider<P, T = string, T2 = undefined> = P & {
+  configureTransformersEnv: (e: Partial<typeof env>) => void
   loadEmbed: (model: (string & {}) | T, options?: T2) => Promise<void>
   terminateEmbed: () => void
 }
@@ -51,6 +52,7 @@ export const createEmbedProvider = <
   const terminateEmbed = () => worker.dispose()
 
   return {
+    configureTransformersEnv: e => worker.configure(e, 'configure'),
     embed: (model, options) => Object.assign(createOptions, {
       fetch: async (_: any, init: RequestInit) => {
         await loadEmbed(model, { onProgress: options?.onProgress } as LoadOptions<any>)

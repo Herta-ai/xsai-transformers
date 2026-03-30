@@ -1,13 +1,13 @@
 import type { FeatureExtractionPipeline } from '@huggingface/transformers'
 import type { PipelineOptionsFrom } from '@xsai-transformers/shared/types'
 
-import { pipeline } from '@huggingface/transformers'
+import { env, pipeline } from '@huggingface/transformers'
 import { defineInvokeHandler, defineStreamInvokeHandler, toStreamHandler } from '@moeru/eventa'
 import { createContext } from '@moeru/eventa/adapters/webworkers/worker'
 import { merge } from '@moeru/std/merge'
 import { isWebGPUSupported } from 'gpuu/webgpu'
 
-import { extract, load } from '../shared'
+import { configure, extract, load } from '../shared'
 import { MessageStatus } from '../types'
 
 const { context } = createContext()
@@ -43,3 +43,8 @@ defineStreamInvokeHandler(context, load, toStreamHandler(async ({ emit, payload:
 
   emit({ data: { message: 'Ready!', status: MessageStatus.Ready }, type: 'status' })
 }))
+
+// eslint-disable-next-line @masknet/no-top-level
+defineInvokeHandler(context, configure, (e) => {
+  Object.assign(env, e)
+})
